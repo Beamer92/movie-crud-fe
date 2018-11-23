@@ -6,7 +6,7 @@
   "scripts": {
     "build": "browserify js/index.js -o bundle.js",
     "watch": "watchify js/index.js -o bundle.js",
-    "dev-server": "live-server home.html",
+    "dev-server": "live-server .",
     "dev": "run-all \"npm run watch\" \"npm run dev-server\""
   },
   "keywords": [],
