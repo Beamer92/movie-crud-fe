@@ -2,11 +2,11 @@
   "name": "movie_crud_fe",
   "version": "1.0.0",
   "description": "",
-  "main": "./JS/index.js",
+  "main": "index.js",
   "scripts": {
-    "build": "browserify ./JS/index.js -o bundle.js",
-    "watch": "watchify ./JS/index.js -o bundle.js",
-    "dev-server": "live-server ./html/home.html",
+    "build": "browserify js/index.js -o bundle.js",
+    "watch": "watchify js/index.js -o bundle.js",
+    "dev-server": "live-server home.html",
     "dev": "run-all \"npm run watch\" \"npm run dev-server\""
   },
   "keywords": [],
