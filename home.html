@@ -5,19 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>HomePage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link href="/style/main.css" rel="stylesheet" type="text/css" >
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <!-- <script src="main.js"></script> -->
 </head>
 <body>
-    <nav>
-        <h1>The World's Most Trustworthy Movie Ratings</h1>
-        <h3>See what experts have determined your favorite movie is worth!</h3>
-        <h3><a href='index.html'>View Movies Here!</a></h3>
+    <nav class='home-nav'>
+        <div class='flex container'>
+            <h1 class='row'>Movie, B*tch, Get Out The Way</h1>
+            <h3 class='row'>See The World's Most Ludacris Movie Reviews</h3>
+        </div>
     </nav>
 
-    <div class='main'>
-        <img class='home-img' href='https://studybreaks.com/wp-content/uploads/2017/04/moviecriticsseats.jpg'>
+    <div class='flex container bod'>
+        <div class='row title'>
+            <h4>All Movie Reviews</h4>
+            <button id='addMovie'>Add Movie</button>
+        </div>
+
+        <div class='row movies-top'>
+            <div class='col-md-2'>Title</div>
+            <div class='col-md-2'>Director</div>
+            <div class='col-md-2'>Year</div>
+            <div class='col-md-2'>Rating</div>
+            <div class='col-md-2'>Edit</div>
+            <div class='col-md-2'>Delete</div>
+        </div>
     </div>
-    
 </body>
 </html>

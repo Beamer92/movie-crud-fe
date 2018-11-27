@@ -1,3 +1,35 @@
+body, nav {
+    background-color: rgb(158, 158, 158);
+}
+
 nav {
-    background-color: red;
+    color: whitesmoke;
+}
+
+nav .row {
+    justify-content: center;
+}
+
+.row.title {
+    justify-content: space-between;
+    margin-top: 3em;
+}
+
+.flex.container.bod {
+    background-color: rgb(198, 212, 226);
+}
+
+#addMovie {
+    color: whitesmoke;
+    background-color: rgb(95, 89, 89);
+}
+
+.row.movies-top, .row.movie {
+    border-bottom: 1px solid black;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.home-img {
+    max-width: 100%;
 }
