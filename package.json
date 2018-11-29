@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "browserify js/index.js -o bundle.js",
-    "watch": "watchify js/index.js -o bundle.js",
+    "build": "browserify js/main.js -o bundle.js",
+    "watch": "watchify js/main.js -o bundle.js",
     "dev-server": "live-server .",
     "dev": "run-all \"npm run watch\" \"npm run dev-server\""
   },
@@ -17,5 +17,8 @@
     "live-server": "^1.2.0",
     "run-all": "^1.0.1",
     "watchify": "^3.11.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
   }
 }

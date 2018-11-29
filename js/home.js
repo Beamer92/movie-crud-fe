@@ -32,27 +32,32 @@ function addMovieRows() {
             let row = document.createElement('div')
             row.classList.add('row', 'movieRow')
             row.id = x.id
-            let title = document.createElement('div')
-            title.classList.add('col-md-2')
-            let director = document.createElement('div')
-            director.classList.add('col-md-2')
-            let year = document.createElement('div')
-            year.classList.add('col-md-2')
-            let rating = document.createElement('div')
-            rating.classList.add('col-md-2')
+            let titlediv = document.createElement('div')
+            titlediv.classList.add('col-md-2')
+            let titlespan = document.createElement('span')
+            let directordiv = document.createElement('div')
+            directordiv.classList.add('col-md-2')
+            let directorspan = document.createElement('span')
+            let yeardiv = document.createElement('div')
+            yeardiv.classList.add('col-md-2')
+            let yearspan = document.createElement('span')
+            let ratingdiv = document.createElement('div')
+            ratingdiv.classList.add('col-md-2')
+            let ratingspan = document.createElement('span')
+
             let editdiv = document.createElement('div')
             editdiv.classList.add('col-md-2')
             let edit = document.createElement('button')
-            edit.classList.add('btn')
+            edit.classList.add('btn', 'btn-info')
             let deldiv = document.createElement('div')
             deldiv.classList.add('col-md-2')
             let del = document.createElement('button')
-            del.classList.add('btn')
+            del.classList.add('btn', 'btn-danger')
     
-            title.innerText = x.title
-            director.innerText = x.director
-            year.innerText = x.year
-            rating.innerText = x.rating
+            titlespan.innerText = x.title
+            directorspan.innerText = x.director
+            yearspan.innerText = x.year
+            ratingspan.innerText = x.rating
             edit.innerText = 'Edit'
             edit.addEventListener('click', function(e){
                 e.preventDefault()
@@ -66,10 +71,14 @@ function addMovieRows() {
                 deleteMovie(row.id)
             })
     
-            row.appendChild(title)
-            row.appendChild(director)
-            row.appendChild(year)
-            row.appendChild(rating)
+            titlediv.appendChild(titlespan)
+            row.appendChild(titlediv)
+            directordiv.appendChild(directorspan)
+            row.appendChild(directordiv)
+            yeardiv.appendChild(yearspan)
+            row.appendChild(yeardiv)
+            ratingdiv.appendChild(ratingspan)
+            row.appendChild(ratingdiv)
             editdiv.appendChild(edit)
             row.appendChild(editdiv)
             deldiv.appendChild(del)
@@ -87,7 +96,14 @@ function addMovieRows() {
 }
 
 function deleteMovie(movieId){
-
+    return request(`/${movieId}`, 'delete')
+    .then(function(){
+        location.reload();
+    })
+    .catch(function(error){
+        alert(error)
+        location.reload();
+    })
 }
 
 function init() {
