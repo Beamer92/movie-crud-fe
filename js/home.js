@@ -1,30 +1,8 @@
-//POST
-// request('/auth/token', 'post', { username , password })
-// .then(function(response){
-//   document.querySelector('#error').classList.add('hide-auth-error')
-//   localStorage.setItem('token', response.data.token)
-//   window.location = '/protected.html'
-// })
-// .catch(function(error){
-//   document.querySelector('#error').classList.remove('hide-auth-error')
-// })
-
-//GET
-// request(`/protected/${id}`)
-// .then(function(response){
-//   console.log(response);
-//   document.querySelector('.message').innerHTML = `Hello ${response.data.id}, ${response.data.message}`
-// })
-// .catch(function(error){
-//   console.log(error)
-//   document.querySelector('.message').innerHTML = 'You cannot access this resource'
-// })
-
 const { request } = require('./utils')
 
 const movTable = document.getElementById('movietable')
 
-function addMovieRows() {
+function renderMovieRows() {
     return request('/')
     .then(result => {
         let data = result.data.movieList
@@ -62,8 +40,6 @@ function addMovieRows() {
             edit.addEventListener('click', function(e){
                 e.preventDefault()
                 window.location = `/edit.html?id=${row.id}`
-                //let str = window.location.search
-                //let id = str.substring(str.indexOf('=')+1)
             })
             del.innerText = 'Delete'
             del.addEventListener('click',function(e){
@@ -106,8 +82,16 @@ function deleteMovie(movieId){
     })
 }
 
+function addMovieEvent(){
+    document.getElementById('addMovie').addEventListener('click', function(e) {
+        e.preventDefault()
+        window.location = '/newPage.html'
+    })
+}
+
 function init() {
-    addMovieRows()
+    renderMovieRows()
+    addMovieEvent()
 }
 
 

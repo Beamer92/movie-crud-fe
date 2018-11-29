@@ -1,43 +1,69 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const { request } = require('./utils')
 
-//let str = window.location.search
-//let id = str.substring(str.indexOf('=')+1)
+function getMovie(movieId){
+    const purl = document.getElementById('purl')
+    const titleDiv = document.getElementById('eTitle')
+    const directorDiv = document.getElementById('eDirector')
+    const ratingDiv = document.getElementById('eRating')
+    const yearDiv = document.getElementById('eYear')
+    const posterDiv = document.getElementById('ePostURL')
+    request(`/${movieId}`)
+    .then(({data}) => {
+        purl.src = data.poster
+        titleDiv.value = data.title
+        directorDiv.value  = data.director
+        ratingDiv.value  = data.rating
+        yearDiv.value  = data.year
+        posterDiv.value  = data.poster
 
-function init() {
-    console.log('Edit Stuff!')
+        addEventListener(movieId)
+    })
+    .catch(error => {
+        alert(error)
+        window.location = '/home.html'
+    })
+}
+
+function addEventListener(movieId) {
+    document.getElementById('editbtn').addEventListener('click', function(e){
+        e.preventDefault()
+        let title = document.getElementById('eTitle').value
+        let director = document.getElementById('eDirector').value
+        let rating = document.getElementById('eRating').value
+        let year = document.getElementById('eYear').value
+        let poster = document.getElementById('ePostURL').value
+
+        request(`/${movieId}`, 'put', {title, director, rating, year, poster})
+        .then(result => {
+            document.getElementById('purl').src = poster
+            document.querySelector('#success').classList.remove('hide-confirm')
+            setTimeout(() => {
+                // window.location = `/edit.html?=${movieId}`
+                document.querySelector('#success').classList.add('hide-confirm')
+            }, 2000);
+        })
+        .catch(error => {
+            alert(error)
+            window.location = '/home.html'
+        })
+    })
+}
+
+function init() {  
+    const str = window.location.search
+    const id = str.substring(str.indexOf('=')+1)
+    getMovie(id)
 }
 
 
 module.exports = { init }
-},{"./utils":5}],2:[function(require,module,exports){
-//POST
-// request('/auth/token', 'post', { username , password })
-// .then(function(response){
-//   document.querySelector('#error').classList.add('hide-auth-error')
-//   localStorage.setItem('token', response.data.token)
-//   window.location = '/protected.html'
-// })
-// .catch(function(error){
-//   document.querySelector('#error').classList.remove('hide-auth-error')
-// })
-
-//GET
-// request(`/protected/${id}`)
-// .then(function(response){
-//   console.log(response);
-//   document.querySelector('.message').innerHTML = `Hello ${response.data.id}, ${response.data.message}`
-// })
-// .catch(function(error){
-//   console.log(error)
-//   document.querySelector('.message').innerHTML = 'You cannot access this resource'
-// })
-
+},{"./utils":6}],2:[function(require,module,exports){
 const { request } = require('./utils')
 
 const movTable = document.getElementById('movietable')
 
-function addMovieRows() {
+function renderMovieRows() {
     return request('/')
     .then(result => {
         let data = result.data.movieList
@@ -75,8 +101,6 @@ function addMovieRows() {
             edit.addEventListener('click', function(e){
                 e.preventDefault()
                 window.location = `/edit.html?id=${row.id}`
-                //let str = window.location.search
-                //let id = str.substring(str.indexOf('=')+1)
             })
             del.innerText = 'Delete'
             del.addEventListener('click',function(e){
@@ -119,13 +143,21 @@ function deleteMovie(movieId){
     })
 }
 
+function addMovieEvent(){
+    document.getElementById('addMovie').addEventListener('click', function(e) {
+        e.preventDefault()
+        window.location = '/newPage.html'
+    })
+}
+
 function init() {
-    addMovieRows()
+    renderMovieRows()
+    addMovieEvent()
 }
 
 
 module.exports = {init}
-},{"./utils":5}],3:[function(require,module,exports){
+},{"./utils":6}],3:[function(require,module,exports){
 function init(){
 
 }
@@ -135,13 +167,14 @@ module.exports = {init}
 const index = require('./index')
 const home = require('./home')
 const edit = require('./edit')
-
+const newP = require('./newPage')
 
 const pageInitialization = {
   '/' : index.init,
   '/index.html': index.init,
-  '/home.html' : home.init
-  ,'/edit.html' : edit.init
+  '/home.html' : home.init,
+  '/edit.html' : edit.init,
+  '/newPage.html' : newP.init
 }
 
 const path = window.location.pathname
@@ -154,7 +187,17 @@ else {
 }
 
 
-},{"./edit":1,"./home":2,"./index":3}],5:[function(require,module,exports){
+},{"./edit":1,"./home":2,"./index":3,"./newPage":5}],5:[function(require,module,exports){
+const { request } = require('./utils')
+
+
+function init() {  
+    console.log('something')
+}
+
+
+module.exports = { init }
+},{"./utils":6}],6:[function(require,module,exports){
 const axios = require('axios')
 
 function request(path, method = 'get', body = null) {
@@ -170,9 +213,9 @@ function request(path, method = 'get', body = null) {
 }
 
 module.exports = { request }
-},{"axios":6}],6:[function(require,module,exports){
+},{"axios":7}],7:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":8}],7:[function(require,module,exports){
+},{"./lib/axios":9}],8:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -356,7 +399,7 @@ module.exports = function xhrAdapter(config) {
 };
 
 }).call(this,require('_process'))
-},{"../core/createError":14,"./../core/settle":17,"./../helpers/btoa":21,"./../helpers/buildURL":22,"./../helpers/cookies":24,"./../helpers/isURLSameOrigin":26,"./../helpers/parseHeaders":28,"./../utils":30,"_process":32}],8:[function(require,module,exports){
+},{"../core/createError":15,"./../core/settle":18,"./../helpers/btoa":22,"./../helpers/buildURL":23,"./../helpers/cookies":25,"./../helpers/isURLSameOrigin":27,"./../helpers/parseHeaders":29,"./../utils":31,"_process":33}],9:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -410,7 +453,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":9,"./cancel/CancelToken":10,"./cancel/isCancel":11,"./core/Axios":12,"./defaults":19,"./helpers/bind":20,"./helpers/spread":29,"./utils":30}],9:[function(require,module,exports){
+},{"./cancel/Cancel":10,"./cancel/CancelToken":11,"./cancel/isCancel":12,"./core/Axios":13,"./defaults":20,"./helpers/bind":21,"./helpers/spread":30,"./utils":31}],10:[function(require,module,exports){
 'use strict';
 
 /**
@@ -431,7 +474,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -490,14 +533,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":9}],11:[function(require,module,exports){
+},{"./Cancel":10}],12:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var defaults = require('./../defaults');
@@ -578,7 +621,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"./../defaults":19,"./../utils":30,"./InterceptorManager":13,"./dispatchRequest":15}],13:[function(require,module,exports){
+},{"./../defaults":20,"./../utils":31,"./InterceptorManager":14,"./dispatchRequest":16}],14:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -632,7 +675,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":30}],14:[function(require,module,exports){
+},{"./../utils":31}],15:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -652,7 +695,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":16}],15:[function(require,module,exports){
+},{"./enhanceError":17}],16:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -740,7 +783,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":11,"../defaults":19,"./../helpers/combineURLs":23,"./../helpers/isAbsoluteURL":25,"./../utils":30,"./transformData":18}],16:[function(require,module,exports){
+},{"../cancel/isCancel":12,"../defaults":20,"./../helpers/combineURLs":24,"./../helpers/isAbsoluteURL":26,"./../utils":31,"./transformData":19}],17:[function(require,module,exports){
 'use strict';
 
 /**
@@ -763,7 +806,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -791,7 +834,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":14}],18:[function(require,module,exports){
+},{"./createError":15}],19:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -813,7 +856,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":30}],19:[function(require,module,exports){
+},{"./../utils":31}],20:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -913,7 +956,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":7,"./adapters/xhr":7,"./helpers/normalizeHeaderName":27,"./utils":30,"_process":32}],20:[function(require,module,exports){
+},{"./adapters/http":8,"./adapters/xhr":8,"./helpers/normalizeHeaderName":28,"./utils":31,"_process":33}],21:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -926,7 +969,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 // btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
@@ -964,7 +1007,7 @@ function btoa(input) {
 
 module.exports = btoa;
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1032,7 +1075,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":30}],23:[function(require,module,exports){
+},{"./../utils":31}],24:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1048,7 +1091,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1103,7 +1146,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":30}],25:[function(require,module,exports){
+},{"./../utils":31}],26:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1119,7 +1162,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1189,7 +1232,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":30}],27:[function(require,module,exports){
+},{"./../utils":31}],28:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1203,7 +1246,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":30}],28:[function(require,module,exports){
+},{"../utils":31}],29:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1258,7 +1301,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":30}],29:[function(require,module,exports){
+},{"./../utils":31}],30:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1287,7 +1330,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -1592,7 +1635,7 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":20,"is-buffer":31}],31:[function(require,module,exports){
+},{"./helpers/bind":21,"is-buffer":32}],32:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -1615,7 +1658,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 

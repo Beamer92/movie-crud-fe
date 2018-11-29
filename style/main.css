@@ -51,6 +51,15 @@ nav .row {
     margin-right: 1em;
 }
 
+.row.movieRow {
+    padding-bottom: 5px;
+}
+
 .home-img {
     max-width: 100%;
 }
+
+.hide-confirm{
+    visibility: hidden;
+  }
+  
