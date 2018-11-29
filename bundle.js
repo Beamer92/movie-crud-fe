@@ -26,7 +26,7 @@ function getMovie(movieId){
 }
 
 function addEventListener(movieId) {
-    document.getElementById('editbtn').addEventListener('click', function(e){
+    document.querySelector('.editform').addEventListener('submit', function(e){
         e.preventDefault()
         let title = document.getElementById('eTitle').value
         let director = document.getElementById('eDirector').value
@@ -44,8 +44,11 @@ function addEventListener(movieId) {
             }, 2000);
         })
         .catch(error => {
-            alert(error)
-            window.location = '/home.html'
+            if(error.response.status === 406) {alert("ERROR 406, Invalid Parameters: Ratings must be 1-5")}
+            else {
+                alert(error)
+                window.location = '/home.html'
+            }   
         })
     })
 }
@@ -58,7 +61,7 @@ function init() {
 
 
 module.exports = { init }
-},{"./utils":6}],2:[function(require,module,exports){
+},{"./utils":7}],2:[function(require,module,exports){
 const { request } = require('./utils')
 
 const movTable = document.getElementById('movietable')
@@ -73,7 +76,7 @@ function renderMovieRows() {
             row.id = x.id
             let titlediv = document.createElement('div')
             titlediv.classList.add('col-md-2')
-            let titlespan = document.createElement('span')
+            let titlea = document.createElement('a')
             let directordiv = document.createElement('div')
             directordiv.classList.add('col-md-2')
             let directorspan = document.createElement('span')
@@ -93,7 +96,8 @@ function renderMovieRows() {
             let del = document.createElement('button')
             del.classList.add('btn', 'btn-danger')
     
-            titlespan.innerText = x.title
+            titlea.innerText = x.title
+            titlea.href = `/show.html?id=${row.id}`
             directorspan.innerText = x.director
             yearspan.innerText = x.year
             ratingspan.innerText = x.rating
@@ -108,7 +112,7 @@ function renderMovieRows() {
                 deleteMovie(row.id)
             })
     
-            titlediv.appendChild(titlespan)
+            titlediv.appendChild(titlea)
             row.appendChild(titlediv)
             directordiv.appendChild(directorspan)
             row.appendChild(directordiv)
@@ -157,9 +161,8 @@ function init() {
 
 
 module.exports = {init}
-},{"./utils":6}],3:[function(require,module,exports){
+},{"./utils":7}],3:[function(require,module,exports){
 function init(){
-
 }
 
 module.exports = {init}
@@ -168,13 +171,15 @@ const index = require('./index')
 const home = require('./home')
 const edit = require('./edit')
 const newP = require('./newPage')
+const show = require('./show')
 
 const pageInitialization = {
   '/' : index.init,
   '/index.html': index.init,
   '/home.html' : home.init,
   '/edit.html' : edit.init,
-  '/newPage.html' : newP.init
+  '/newPage.html' : newP.init,
+  '/show.html' : show.init
 }
 
 const path = window.location.pathname
@@ -187,17 +192,78 @@ else {
 }
 
 
-},{"./edit":1,"./home":2,"./index":3,"./newPage":5}],5:[function(require,module,exports){
+},{"./edit":1,"./home":2,"./index":3,"./newPage":5,"./show":6}],5:[function(require,module,exports){
 const { request } = require('./utils')
 
+function addEventListener() {
+    
+    document.querySelector('.editform').addEventListener('submit', function(e){
+        e.preventDefault()
+        let title = document.getElementById('newTitle').value
+        let director = document.getElementById('newDirector').value
+        let rating = document.getElementById('newRating').value
+        let year = document.getElementById('newYear').value
+        let poster = document.getElementById('newPostURL').value
+
+        request('/', 'post', {title, director, year, rating, poster})
+        .then(result => {
+            document.querySelector('#newSuccess').classList.remove('hide-confirm')
+            setTimeout(() => {
+                document.querySelector('#newSuccess').classList.add('hide-confirm')
+                window.location = `/show.html?=${result.data[0].id}`
+            }, 1000);
+        })
+        .catch(error => {
+            if(error.response.status === 406) {alert("ERROR 406, Invalid Parameters: Ratings must be 1-5")}
+            else {
+                alert(error)
+                window.location = '/home.html'
+            }   
+        })
+    })
+}
 
 function init() {  
-    console.log('something')
+    addEventListener()
 }
 
 
 module.exports = { init }
-},{"./utils":6}],6:[function(require,module,exports){
+
+
+},{"./utils":7}],6:[function(require,module,exports){
+const { request } = require('./utils')
+
+function getMovie(movieId){
+    const purl = document.getElementById('purl')
+    const titleDiv = document.getElementById('showTitle')
+    const directorDiv = document.getElementById('showDirector')
+    const ratingDiv = document.getElementById('showRating')
+    const yearDiv = document.getElementById('showYear')
+    request(`/${movieId}`)
+    .then(({data}) => {
+        purl.src = data.poster
+        titleDiv.innerText = 'Title: ' + data.title
+        directorDiv.innerText = 'Director: ' + data.director
+        ratingDiv.innerText  = 'Our Rating: ' + data.rating
+        yearDiv.innerText = 'Release Year: ' + data.year
+    })
+    .catch(error => {
+        alert(error)
+        window.location = '/home.html'
+    })
+}
+
+
+function init() {  
+    const str = window.location.search
+    const id = str.substring(str.indexOf('=')+1)
+    getMovie(id)
+}
+
+
+module.exports = { init }
+},{"./utils":7}],7:[function(require,module,exports){
 const axios = require('axios')
 
 function request(path, method = 'get', body = null) {
@@ -213,9 +279,9 @@ function request(path, method = 'get', body = null) {
 }
 
 module.exports = { request }
-},{"axios":7}],7:[function(require,module,exports){
+},{"axios":8}],8:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":9}],8:[function(require,module,exports){
+},{"./lib/axios":10}],9:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -399,7 +465,7 @@ module.exports = function xhrAdapter(config) {
 };
 
 }).call(this,require('_process'))
-},{"../core/createError":15,"./../core/settle":18,"./../helpers/btoa":22,"./../helpers/buildURL":23,"./../helpers/cookies":25,"./../helpers/isURLSameOrigin":27,"./../helpers/parseHeaders":29,"./../utils":31,"_process":33}],9:[function(require,module,exports){
+},{"../core/createError":16,"./../core/settle":19,"./../helpers/btoa":23,"./../helpers/buildURL":24,"./../helpers/cookies":26,"./../helpers/isURLSameOrigin":28,"./../helpers/parseHeaders":30,"./../utils":32,"_process":34}],10:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -453,7 +519,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":10,"./cancel/CancelToken":11,"./cancel/isCancel":12,"./core/Axios":13,"./defaults":20,"./helpers/bind":21,"./helpers/spread":30,"./utils":31}],10:[function(require,module,exports){
+},{"./cancel/Cancel":11,"./cancel/CancelToken":12,"./cancel/isCancel":13,"./core/Axios":14,"./defaults":21,"./helpers/bind":22,"./helpers/spread":31,"./utils":32}],11:[function(require,module,exports){
 'use strict';
 
 /**
@@ -474,7 +540,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -533,14 +599,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":10}],12:[function(require,module,exports){
+},{"./Cancel":11}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var defaults = require('./../defaults');
@@ -621,7 +687,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"./../defaults":20,"./../utils":31,"./InterceptorManager":14,"./dispatchRequest":16}],14:[function(require,module,exports){
+},{"./../defaults":21,"./../utils":32,"./InterceptorManager":15,"./dispatchRequest":17}],15:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -675,7 +741,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":31}],15:[function(require,module,exports){
+},{"./../utils":32}],16:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -695,7 +761,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":17}],16:[function(require,module,exports){
+},{"./enhanceError":18}],17:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -783,7 +849,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":12,"../defaults":20,"./../helpers/combineURLs":24,"./../helpers/isAbsoluteURL":26,"./../utils":31,"./transformData":19}],17:[function(require,module,exports){
+},{"../cancel/isCancel":13,"../defaults":21,"./../helpers/combineURLs":25,"./../helpers/isAbsoluteURL":27,"./../utils":32,"./transformData":20}],18:[function(require,module,exports){
 'use strict';
 
 /**
@@ -806,7 +872,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -834,7 +900,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":15}],19:[function(require,module,exports){
+},{"./createError":16}],20:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -856,7 +922,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":31}],20:[function(require,module,exports){
+},{"./../utils":32}],21:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -956,7 +1022,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":8,"./adapters/xhr":8,"./helpers/normalizeHeaderName":28,"./utils":31,"_process":33}],21:[function(require,module,exports){
+},{"./adapters/http":9,"./adapters/xhr":9,"./helpers/normalizeHeaderName":29,"./utils":32,"_process":34}],22:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -969,7 +1035,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 // btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
@@ -1007,7 +1073,7 @@ function btoa(input) {
 
 module.exports = btoa;
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1075,7 +1141,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":31}],24:[function(require,module,exports){
+},{"./../utils":32}],25:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1091,7 +1157,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1146,7 +1212,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":31}],26:[function(require,module,exports){
+},{"./../utils":32}],27:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1162,7 +1228,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1232,7 +1298,7 @@ module.exports = (
   })()
 );
 
-},{"./../utils":31}],28:[function(require,module,exports){
+},{"./../utils":32}],29:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1246,7 +1312,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":31}],29:[function(require,module,exports){
+},{"../utils":32}],30:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1301,7 +1367,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":31}],30:[function(require,module,exports){
+},{"./../utils":32}],31:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1330,7 +1396,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -1635,7 +1701,7 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":21,"is-buffer":32}],32:[function(require,module,exports){
+},{"./helpers/bind":22,"is-buffer":33}],33:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -1658,7 +1724,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 

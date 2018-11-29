@@ -25,7 +25,7 @@ function getMovie(movieId){
 }
 
 function addEventListener(movieId) {
-    document.getElementById('editbtn').addEventListener('click', function(e){
+    document.querySelector('.editform').addEventListener('submit', function(e){
         e.preventDefault()
         let title = document.getElementById('eTitle').value
         let director = document.getElementById('eDirector').value
@@ -43,8 +43,11 @@ function addEventListener(movieId) {
             }, 2000);
         })
         .catch(error => {
-            alert(error)
-            window.location = '/home.html'
+            if(error.response.status === 406) {alert("ERROR 406, Invalid Parameters: Ratings must be 1-5")}
+            else {
+                alert(error)
+                window.location = '/home.html'
+            }   
         })
     })
 }

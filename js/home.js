@@ -12,7 +12,7 @@ function renderMovieRows() {
             row.id = x.id
             let titlediv = document.createElement('div')
             titlediv.classList.add('col-md-2')
-            let titlespan = document.createElement('span')
+            let titlea = document.createElement('a')
             let directordiv = document.createElement('div')
             directordiv.classList.add('col-md-2')
             let directorspan = document.createElement('span')
@@ -32,7 +32,8 @@ function renderMovieRows() {
             let del = document.createElement('button')
             del.classList.add('btn', 'btn-danger')
     
-            titlespan.innerText = x.title
+            titlea.innerText = x.title
+            titlea.href = `/show.html?id=${row.id}`
             directorspan.innerText = x.director
             yearspan.innerText = x.year
             ratingspan.innerText = x.rating
@@ -47,7 +48,7 @@ function renderMovieRows() {
                 deleteMovie(row.id)
             })
     
-            titlediv.appendChild(titlespan)
+            titlediv.appendChild(titlea)
             row.appendChild(titlediv)
             directordiv.appendChild(directorspan)
             row.appendChild(directordiv)

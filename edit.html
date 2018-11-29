@@ -29,16 +29,16 @@
                 <img style='max-width:90%;' id='purl' src=''></img>
                 <form class='editform'>
                     <label for='eTitle'>Title: </label>
-                    <input id='eTitle' type='text'></input><br>
+                    <input id='eTitle' type='text' required></input><br>
                     <label for='eDirector'>Director: </label>
-                    <input id='eDirector' type='text'></input><br>
+                    <input id='eDirector' type='text' required></input><br>
                     <label for='eYear'>Year: </label>
-                    <input id='eYear' type='text'></input><br>
+                    <input id='eYear' type='number' required></input><br>
                     <label for='eRating'>My Rating: </label>
-                    <input id='eRating' type='text'></input><br>
+                    <input id='eRating' type='number' required></input><br>
                     <label for='ePostURL'>Poster URL: </label>
-                    <input id='ePostURL' type='text'></input><br>
-                    <button type='submit' id='editbtn' class='btn btn-success'>Submit Edits</button> 
+                    <input id='ePostURL' type='text' required></input><br>
+                    <input type='submit' id='editbtn' class='btn btn-success'></input> 
                 </form>
                 <div class='hide-confirm alert alert-success' id='success'>Updated Successfully!</div>
             </div>

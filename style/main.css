@@ -62,4 +62,8 @@ nav .row {
 .hide-confirm{
     visibility: hidden;
   }
+
+  .show{
+      font-weight: 600;
+  }
   

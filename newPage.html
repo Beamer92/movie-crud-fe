@@ -28,18 +28,18 @@
                 <h3 style='font-weight:bold;'>New Movie Review</h3>
                 <form class='editform'>
                     <label for='newTitle'>Title: </label>
-                    <input id='newTitle' type='text'></input><br>
+                    <input id='newTitle' type='text' required></input><br>
                     <label for='newDirector'>Director: </label>
-                    <input id='newDirector' type='text'></input><br>
+                    <input id='newDirector' type='text' required></input><br>
                     <label for='newYear'>Year: </label>
-                    <input id='newYear' type='text'></input><br>
+                    <input id='newYear' type='number' required></input><br>
                     <label for='newRating'>My Rating: </label>
-                    <input id='newRating' type='text'></input><br>
+                    <input id='newRating' type='number' required></input><br>
                     <label for='newPostURL'>Poster URL: </label>
-                    <input id='newPostURL' type='text'></input><br>
-                    <button type='submit' id='newbtn' class='btn btn-success'>Submit Edits</button> 
+                    <input id='newPostURL' type='text' required></input><br>
+                    <input type='submit' id='newbtn' class='btn btn-success'></input> 
                 </form>
-                <div class='hide-confirm alert alert-success' id='success'>Movie Added!</div>
+                <div class='hide-confirm alert alert-success' id='newSuccess'>Movie Added!</div>
             </div>
         </div>
     </div>
